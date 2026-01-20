@@ -16,7 +16,7 @@ Advanced spatial analysis and data science for urban planning and public policy.
 
 ## About Me
 - **Name**: Jenny Brar
-- **Background**: I have a BA in Health Science from SFU and work experience in affordable housing. I am a first-year MCP student with a concnetration in Smart Cities. 
+- **Background**: I have a BA in Health Science from SFU and work experience in affordable housing. I am a first-year MCP student with a concentration in Smart Cities. 
 - **Your email address**: jennyb13@upenn.edu
 - **Your GitHub username**: JENB99
 - **Why you're taking this course**: I am interested in gaining tangible skills and gaining insights into ML. 
