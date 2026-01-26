@@ -57,14 +57,16 @@ head(car_data)
 
 **Questions to answer:**
 - How many rows and columns does the dataset have?
+on the display in the, there are 4 columns and six rows. On the actual dataset, there are 7 columns and 49, 999 rows. 
 - What types of variables do you see (numeric, character, etc.)?
+there are categorical variables like the fuel type or year, discrete like the mileage and price.  
 - Are there any column names that might cause problems? Why?
 
 **Your answers:**
-- Rows: [YOUR ANSWER]
-- Columns: [YOUR ANSWER]  
-- Variable types: [YOUR ANSWER]
-- Problematic names: [YOUR ANSWER]
+- Rows: 49, 999
+- Columns: 7  
+- Variable types: there are categorical variables like the fuel type or year, discrete like the mileage and price. The variables listed as numbers that are meaningful are doubles (dbl), the others are characters. 
+- Problematic names: None that I can see. 
 
 ## 1.2 Tibble vs Data Frame
 
@@ -81,7 +83,7 @@ car_df
 
 **Question:** What differences do you notice in how they print?
 
-**Your answer:** [YOUR ANSWER]
+**Your answer:** Tibble shows the first few rows and columns where as df give you the ability to go through them all 
 
 # Exercise 2: Basic Column Operations
 
@@ -91,12 +93,14 @@ Practice selecting different combinations of columns:
 
 ```{r column-selection}
 # Select just Model and Mileage columns
+select(car_data, Model, Mileage)
 
 
 # Select Manufacturer, Price, and Fuel type
-
+select(car_data, Manufacturer, Price, 'Fuel type')
 
 # Challenge: Select all columns EXCEPT Engine Size
+select(car_data, -'Engine size')
 
 ```
 
@@ -106,6 +110,8 @@ Let's fix a problematic column name:
 
 ```{r rename-columns}
 # Rename 'Year of manufacture' to year
+dput(names(car_data))
+
 
 
 # Check that it worked
@@ -114,7 +120,7 @@ names(car_data)
 
 **Question:** Why did we need backticks around `Year of manufacture` but not around `year`?
 
-**Your answer:** [YOUR ANSWER]
+**Your answer:** because there are spaces in the column name. 
 
 # Exercise 3: Creating New Columns
 
@@ -122,22 +128,34 @@ names(car_data)
 
 ```{r calculate-age}
 # Create an 'age' column (2025 minus year of manufacture)
+library(dplyr)
+
+car_data <- car_data %>%
+  mutate(age = 2025 - year)
 
 
-# Create a mileage_per_year column  
+
+
+# Create a mileage_per_year column 
+car_data <- car_data %>%
+  mutate(mileage_per_year = Mileage/age)
+
 
 
 # Look at your new columns
 #select(car_data, Model, year, age, Mileage, mileage_per_year)
+names(car_data)
 ```
 
 ## 3.2 Categorize Cars
 
 ```{r categorize-cars}
 # Create a price_category column where if price is < 15000, its is coded as budget, between 15000 and 30000 is midrange and greater than 30000 is mid-range (use case_when)
-
+car_data<-car_data%>%
+  mutate(price_category=case_when(Price<15000 ~ "budget", Price<=15000 & Price<= 30000 ~"midrange", Price>30000~"high"))
 
 # Check your categories select the new column and show it
+car_data$price_category
 ```
 
 # Exercise 4: Filtering Practice
@@ -146,12 +164,17 @@ names(car_data)
 
 ```{r basic-filtering}
 # Find all Toyota cars
-
-
+car_data
+car_data%>%
+  filter(Manufacturer =="Toyota")
 # Find cars with mileage less than 30,000
+car_data%>%
+  filter(Mileage<30000)
 
 
 # Find luxury cars (from price category) with low mileage
+car_data%>%
+filter(price_category=="high",Mileage< 30000)
 
 ```
 
@@ -159,18 +182,24 @@ names(car_data)
 
 ```{r multiple-conditions}
 # Find cars that are EITHER Honda OR Nissan
-
+car_data%>%
+  filter(Manufacturer =="Honda" |
+         Manufacturer =="Nissan")
 
 # Find cars with price between $20,000 and $35,000
+car_data%>%
+  filter(price_category> 20000, price_category < 35000)
 
 
 # Find diesel cars less than 10 years old
+car_data%>%
+  filter(`Fuel type`== "diesel", age<10)
 
 ```
 
 **Question:** How many diesel cars are less than 10 years old?
 
-**Your answer:** [YOUR ANSWER]
+**Your answer:** 0
 
 # Exercise 5: Grouping and Summarizing
 
@@ -185,9 +214,19 @@ avg_price_by_brand <- car_data %>%
 avg_price_by_brand
 
 # Calculate average mileage by fuel type
+avg_mileage_fuel <- car_data %>%
+  group_by(`Fuel type`)%>%
+  summarize(avg_mileage = mean(Mileage, na.rm = TRUE))
+
+avg_mileage_fuel
+  
 
 
 # Count cars by manufacturer
+car_count <- car_data %>%
+  count(Manufacturer)
+
+car_count
 
 ```
 
@@ -196,6 +235,10 @@ avg_price_by_brand
 ```{r categorical-summaries}
 # Frequency table for price categories
 
+price_frq <- car_data %>%
+  count(price_category)
+
+price_frq
 ```
 
 
